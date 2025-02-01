@@ -1,0 +1,56 @@
+# https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
+# ApplicationYmlConfig #
+web:
+  version: "v1"
+  urlToCall: "https://api.coingecko.com/api/v3/coins/list"
+
+# server #
+server:
+  port: 8080
+  servlet:
+    contextPath: /postgres-coingecko-coins-list
+
+# logger #
+logging:
+  level:
+    org:
+      springframework:
+        data: WARN
+        web: WARN
+    net:
+      marco27:
+        api: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: logs/postgres-coingecko-coins-list.log
+
+# Actuator endpoints: https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - beans
+          - env
+          - health
+          - logfile
+          - loggers
+          - metrics
+          - threaddump
+  endpoint:
+    beans:
+      enabled: true
+    env:
+      enabled: true
+    health:
+      show-details: always
+    logfile:
+      enabled: true
+    loggers:
+      enabled: true
+    metrics:
+      enabled: true
+    threaddump:
+      enabled: true

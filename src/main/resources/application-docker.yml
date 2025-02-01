@@ -1,0 +1,6 @@
+# logger #
+logging:
+  level:
+    net:
+      marco27:
+        api: INFO
