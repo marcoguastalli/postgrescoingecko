@@ -1,5 +1,6 @@
 package net.marco27.api.postgrescoingecko.controller;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.marco27.api.postgrescoingecko.config.ApplicationYmlConfig;
 import net.marco27.api.postgrescoingecko.domain.JsonResponseResult;
@@ -22,7 +23,7 @@ public class VersionController {
     private final ApplicationYmlConfig applicationYmlConfig;
 
     @Autowired
-    public VersionController(final ApplicationYmlConfig applicationYmlConfig) {
+    public VersionController(@NonNull ApplicationYmlConfig applicationYmlConfig) {
         this.applicationYmlConfig = applicationYmlConfig;
     }
 

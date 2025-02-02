@@ -31,7 +31,7 @@ class ApiExceptionHandlerControllerTest {
     @Test
     void testConnectionException() {
         ConnectionException exception = assertThrows(ConnectionException.class, () -> {
-            throw new ConnectionException("connection exception", null);
+            throw new ConnectionException("connection exception", new Throwable());
         });
         assertThat(exception.getMessage(), is("connection exception"));
     }
@@ -39,7 +39,7 @@ class ApiExceptionHandlerControllerTest {
     @Test
     void testDocumentNotFoundException() {
         DocumentNotFoundException exception = assertThrows(DocumentNotFoundException.class, () -> {
-            throw new DocumentNotFoundException("not found", null);
+            throw new DocumentNotFoundException("not found", new Throwable());
         });
         assertThat(exception.getMessage(), is("not found"));
     }
@@ -47,7 +47,7 @@ class ApiExceptionHandlerControllerTest {
     @Test
     void testHandleError() {
         final ResponseEntity<String> result = apiExceptionHandlerController.handleError(HttpStatus.NOT_FOUND,
-                new DocumentNotFoundException("This is just a 404 Test", null));
+                new DocumentNotFoundException("This is just a 404 Test", new Throwable()));
         assertThat(result.getBody(), is("This is just a 404 Test"));
         assertThat(result.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }

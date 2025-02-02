@@ -10,11 +10,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<!-- project -->
+	<description>postgres coingecko api</description>
 	<groupId>net.marco27.api</groupId>
 	<artifactId>postgrescoingecko</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>postgrescoingecko</name>
-	<description>postgres coingecko api</description>
+	<version>0.0.1-SNAPSHOT</version>
 	<!-- properties -->
 	<properties>
 		<java.version>21</java.version>
@@ -34,16 +34,17 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 		<!-- DDBB -->
-		<!--dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring-boot-maven-plugin.version.temp}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
 			<scope>runtime</scope>
-		</dependency-->
+		</dependency>
 		<!-- Mocks -->
 		<dependency>
 			<groupId>org.springframework.restdocs</groupId>

@@ -38,3 +38,4 @@ Fetch from https://api.coingecko.com/api/v3/coins/list and persist in Postgres S
 ### Play
 - curl -I http://localhost:8081/postgres-coingecko-coins-list/v1/version
 - curl -I http://localhost:8081/postgres-coingecko-coins-list/v1/coinslist
+- curl -I http://localhost:8081/postgres-coingecko-coins-list/v1/findAllPrices

@@ -1,5 +1,6 @@
 package net.marco27.api.postgrescoingecko.controller;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.marco27.api.postgrescoingecko.exception.ConnectionException;
 import net.marco27.api.postgrescoingecko.exception.DocumentNotFoundException;
@@ -19,18 +20,18 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 public class ApiExceptionHandlerController extends ResponseEntityExceptionHandler {
 
-    ResponseEntity<String> handleError(final HttpStatus status, final Exception e) {
+    ResponseEntity<String> handleError(@NonNull HttpStatus status, Exception e) {
         log.error("Exception: ", e);
         return ResponseEntity.status(status).body(e.getMessage());
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<String> handleNotFoundException(final IllegalArgumentException e) {
+    public ResponseEntity<String> handleNotFoundException(@NonNull IllegalArgumentException e) {
         return handleError(BAD_REQUEST, e);
     }
 
     @ExceptionHandler({ConnectionException.class})
-    public ResponseEntity<String> handleContributorsApiConnectionException(final ConnectionException e) {
+    public ResponseEntity<String> handleContributorsApiConnectionException(@NonNull ConnectionException e) {
         return handleError(INTERNAL_SERVER_ERROR, e);
     }
 
