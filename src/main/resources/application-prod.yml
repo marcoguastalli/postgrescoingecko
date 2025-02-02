@@ -1,0 +1,9 @@
+# logger #
+logging:
+  level:
+    net:
+      marco27:
+        api: ERROR
+springdoc:
+  swagger-ui:
+    enabled: false
