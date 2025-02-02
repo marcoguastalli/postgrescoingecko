@@ -6,6 +6,7 @@ import net.marco27.api.postgrescoingecko.config.ApplicationYmlConfig;
 import net.marco27.api.postgrescoingecko.exception.DocumentNotFoundException;
 import net.marco27.api.postgrescoingecko.service.ApiService;
 import net.marco27.api.postgrescoingecko.service.ApiTransactionService;
+import net.marco27.api.postgrescoingecko.service.CoinsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -36,12 +37,14 @@ class ApiControllerTest {
     @Mock
     ApiTransactionService apiTransactionService;
     @Mock
+    CoinsService coinsService;
+    @Mock
     ApiService apiService;
     ApiController apiController;
 
     @BeforeEach
     void init() {
-        apiController = new ApiController(applicationYmlConfig, apiTransactionService, apiService);
+        apiController = new ApiController(applicationYmlConfig, apiTransactionService, apiService, coinsService);
         when(httpSession.getId()).thenReturn(JUST_A_SESSION_ID);
         when(httpServletRequest.getSession()).thenReturn(httpSession);
     }

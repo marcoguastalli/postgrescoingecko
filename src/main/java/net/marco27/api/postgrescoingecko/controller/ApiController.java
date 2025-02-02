@@ -5,11 +5,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.marco27.api.postgrescoingecko.config.ApplicationYmlConfig;
+import net.marco27.api.postgrescoingecko.domain.CoinResultComparator;
+import net.marco27.api.postgrescoingecko.domain.DeltaResult;
 import net.marco27.api.postgrescoingecko.exception.DocumentNotFoundException;
 import net.marco27.api.postgrescoingecko.model.ApiTransaction;
 import net.marco27.api.postgrescoingecko.model.Coin;
 import net.marco27.api.postgrescoingecko.service.ApiService;
 import net.marco27.api.postgrescoingecko.service.ApiTransactionService;
+import net.marco27.api.postgrescoingecko.service.CoinsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import static java.lang.String.format;
 import static net.marco27.api.postgrescoingecko.AppConstants.SLASH;
 import static net.marco27.api.postgrescoingecko.domain.VersionBean.VERSION;
 import static net.marco27.api.postgrescoingecko.utils.JsonJacksonUtils.getListOfObjectsFromJSonBytes;
+import static net.marco27.api.postgrescoingecko.utils.ListUtils.calculateDelta;
 import static net.marco27.api.postgrescoingecko.utils.LoggerUtils.logDebugTrackingId;
 import static net.marco27.api.postgrescoingecko.utils.LoggerUtils.logInfoTrackingId;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -37,14 +41,17 @@ public class ApiController {
     private final ApplicationYmlConfig applicationYmlConfig;
     private final ApiTransactionService apiTransactionService;
     private final ApiService apiService;
+    private final CoinsService coinsService;
 
     @Autowired
     public ApiController(@NonNull ApplicationYmlConfig applicationYmlConfig,
                          @NonNull ApiTransactionService apiTransactionService,
-                         @NonNull ApiService apiService) {
+                         @NonNull ApiService apiService,
+                         @NonNull CoinsService coinsService) {
         this.applicationYmlConfig = applicationYmlConfig;
         this.apiTransactionService = apiTransactionService;
         this.apiService = apiService;
+        this.coinsService = coinsService;
     }
 
     @ModelAttribute
@@ -67,10 +74,18 @@ public class ApiController {
         // do
         int numberOfCoins = 0;
         final byte[] jsonInBytes = apiService.getJson(applicationYmlConfig.getUrlToCall());
-        final List<Coin> coins = getListOfObjectsFromJSonBytes(jsonInBytes, trackingId, Coin.class);
-        if (null != coins) {
-            numberOfCoins = coins.size();
-            logInfoTrackingId(log, trackingId, format("Found %s coins", numberOfCoins));
+        final List<Coin> currentCoins = getListOfObjectsFromJSonBytes(jsonInBytes, trackingId, Coin.class);
+        if (null != currentCoins) {
+            numberOfCoins = currentCoins.size();
+            // save currentCoins
+            coinsService.saveAll(currentCoins);
+            // get previous coins in the DDBB
+            final List<Coin> coinsInDatabase = coinsService.findAll();
+            // compare
+            final DeltaResult<Coin> deltaResult = calculateDelta(coinsInDatabase, currentCoins, new CoinResultComparator());
+            final String deltaMessage = format("coins difference are %s", deltaResult.getModified().size());
+            apiTransaction.setDelta(deltaMessage);
+            logInfoTrackingId(log, trackingId, format("Found %s coins: %s", numberOfCoins, deltaMessage));
         }
         // fulfill apiTransaction object
         apiTransaction.setResult(HttpStatus.OK.value());
