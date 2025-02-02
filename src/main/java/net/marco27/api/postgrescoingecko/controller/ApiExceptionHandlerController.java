@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 public class ApiExceptionHandlerController extends ResponseEntityExceptionHandler {
 
-    ResponseEntity<String> handleError(@NonNull HttpStatus status, Exception e) {
+    ResponseEntity<String> handleError(@NonNull HttpStatus status, @NonNull Exception e) {
         log.error("Exception: ", e);
         return ResponseEntity.status(status).body(e.getMessage());
     }

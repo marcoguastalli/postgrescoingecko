@@ -1,7 +1,7 @@
 package net.marco27.api.postgrescoingecko.service;
 
 import net.marco27.api.postgrescoingecko.exception.DocumentNotFoundException;
-import net.marco27.api.postgrescoingecko.repository.PricesRepository;
+import net.marco27.api.postgrescoingecko.repository.CoinsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +22,13 @@ class ApiServiceTest {
     @Mock
     RestTemplate restTemplate;
     @Mock
-    PricesRepository pricesRepository;
+    CoinsRepository coinsRepository;
     @InjectMocks
     ApiService apiService;
 
     @BeforeEach
     void init() {
-        apiService = new ApiService(restTemplate, pricesRepository);
+        apiService = new ApiService(restTemplate, coinsRepository);
     }
 
     @Test
