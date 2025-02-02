@@ -3,7 +3,6 @@ package net.marco27.api.postgrescoingecko.service;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.marco27.api.postgrescoingecko.model.ApiTransaction;
-import net.marco27.api.postgrescoingecko.repository.CoinsRepository;
 import net.marco27.api.postgrescoingecko.repository.ApiTransactionRepository;
 import org.springframework.stereotype.Service;
 

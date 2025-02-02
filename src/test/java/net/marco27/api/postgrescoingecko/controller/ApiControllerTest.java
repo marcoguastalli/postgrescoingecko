@@ -41,7 +41,7 @@ class ApiControllerTest {
 
     @BeforeEach
     void init() {
-        apiController = new ApiController(applicationYmlConfig, apiTransactionService,apiService);
+        apiController = new ApiController(applicationYmlConfig, apiTransactionService, apiService);
         when(httpSession.getId()).thenReturn(JUST_A_SESSION_ID);
         when(httpServletRequest.getSession()).thenReturn(httpSession);
     }
