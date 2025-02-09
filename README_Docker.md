@@ -6,7 +6,7 @@ Build and deploy the app using Docker instructions
 `docker build --no-cache -t postgrescoingecko:v0.0.1 . -f Dockerfile_api`
 
 ### run image created from Dockerfile
-`docker run --rm --name postgrescoingecko -p 8080:8080 --network=v1_postgres-pgadmin postgrescoingecko:v0.0.1`
+`docker run --rm --name postgrescoingecko -p 8080:8081 --network=v1_postgres-pgadmin postgrescoingecko:v0.0.1`
 
 ### access the image as root
 `docker run -it postgrescoingecko:v0.0.1 /bin/sh`
@@ -22,5 +22,5 @@ Build and deploy the app using Docker instructions
 `docker exec -u root -it CONTAINER_ID tail -n 1000 -f /logs/ postgrescoingecko.log`
 
 ### play
-curl -I http://172.16.128.130:8080/postgrescoingecko/v1/blocks
-curl -I http://172.16.128.130:8080/postgrescoingecko/v1/version
+- curl -I http://localhost:8080/postgres-coingecko-coins-list/v1/version
+- curl -I http://localhost:8080/postgres-coingecko-coins-list/v1/coinslist
