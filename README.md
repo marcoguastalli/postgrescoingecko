@@ -23,7 +23,7 @@ Fetch from https://api.coingecko.com/api/v3/coins/list and persist in Postgres S
 
 ### Api documentation
 - http://localhost:8081/postgres-coingecko-coins-list/swagger-ui/index.html
-- http://localhost:8081/bitcoin-timechain-calendar/v3/api-docs
+- http://localhost:8081/postgres-coingecko-coins-list/v3/api-docs
 
 ### Actuator
 - http://localhost:8081/postgres-coingecko-coins-list/actuator

@@ -4,3 +4,16 @@ logging:
     net:
       marco27:
         api: INFO
+
+# DDBB #
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/postgres
+    username: postgres
+    password: admin123four
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update  # none, update, validate, create, create-drop
+    show-sql: true

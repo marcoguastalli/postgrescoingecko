@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import net.marco27.api.postgrescoingecko.config.ApplicationYmlConfig;
 import net.marco27.api.postgrescoingecko.exception.DocumentNotFoundException;
+import net.marco27.api.postgrescoingecko.model.ApiTransaction;
 import net.marco27.api.postgrescoingecko.service.ApiService;
 import net.marco27.api.postgrescoingecko.service.ApiTransactionService;
 import net.marco27.api.postgrescoingecko.service.CoinsService;
@@ -40,6 +41,8 @@ class ApiControllerTest {
     CoinsService coinsService;
     @Mock
     ApiService apiService;
+    @Mock
+    ApiTransaction apiTransaction;
     ApiController apiController;
 
     @BeforeEach
@@ -53,6 +56,7 @@ class ApiControllerTest {
     void testGetLatterBlockchainBlocks() throws DocumentNotFoundException {
         // when
         when(apiService.getJson(anyString())).thenReturn(new byte[1]);
+        when(apiTransactionService.save(any(ApiTransaction.class))).thenReturn(apiTransaction);
         // given
         final ResponseEntity<byte[]> response = apiController.getLatterBlockchainBlocks(httpServletRequest);
         // then
