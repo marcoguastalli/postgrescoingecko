@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+ postgrescoingecko:
+    image: postgrescoingecko:v0.0.1
+    container_name: postgrescoingecko
+    ports:
+      - "8080:8081"
+    networks:
+      - postgres-pgadmin
+    depends_on:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
