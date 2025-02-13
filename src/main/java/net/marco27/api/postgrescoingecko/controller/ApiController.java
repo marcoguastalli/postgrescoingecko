@@ -83,7 +83,7 @@ public class ApiController {
             final List<Coin> coinsInDatabase = coinsService.findAll();
             // compare
             final DeltaResult<Coin> deltaResult = calculateDelta(coinsInDatabase, currentCoins, new CoinResultComparator());
-            final String deltaMessage = format("coins difference are %s", deltaResult.getModified().size());
+            final String deltaMessage = format("coins removed are %s - coins modified are %s", deltaResult.getRemoved().size(), deltaResult.getModified().size());
             apiTransaction.setDelta(deltaMessage);
             logInfoTrackingId(log, trackingId, format("Found %s coins: %s", numberOfCoins, deltaMessage));
         }
