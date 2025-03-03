@@ -2,6 +2,7 @@
 Build and deploy the app using Docker instructions
 
 ### build image from Dockerfile
+`setjdk21`
 `./mvnw clean package`
 `docker build --no-cache -t postgrescoingecko:v0.0.1 . -f Dockerfile_api`
 
