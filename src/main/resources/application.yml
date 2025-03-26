@@ -22,7 +22,12 @@ spring:
     hibernate:
       ddl-auto: update  # none, update, validate, create, create-drop
     show-sql: true
-
+  devtools:
+    restart:
+      enabled: true
+      poll-interval: 2000
+      additional-paths:
+        - "src/main/java"
 
 # logger #
 logging:

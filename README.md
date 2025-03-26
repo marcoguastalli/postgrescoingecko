@@ -36,5 +36,5 @@ Fetch from https://api.coingecko.com/api/v3/coins/list and persist in Postgres S
 - http://localhost:8081/postgres-coingecko-coins-list/actuator/threaddump
 
 ### Play
-- curl -I http://localhost:8080/postgres-coingecko-coins-list/v1/version
-- curl -I http://localhost:8080/postgres-coingecko-coins-list/v1/coinslist
+- http://localhost:8081/postgres-coingecko-coins-list/v1/version
+- http://localhost:8081/postgres-coingecko-coins-list/v1/coinslist
