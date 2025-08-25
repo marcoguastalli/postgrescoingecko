@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.marco27.api.postgrescoingecko.config.ApplicationYmlConfig;
 import net.marco27.api.postgrescoingecko.domain.CoinResultComparator;
 import net.marco27.api.postgrescoingecko.domain.DeltaResult;
+import net.marco27.api.postgrescoingecko.dto.ErrorResponse;
 import net.marco27.api.postgrescoingecko.model.ApiTransaction;
 import net.marco27.api.postgrescoingecko.model.Coin;
 import net.marco27.api.postgrescoingecko.service.ApiService;
@@ -106,13 +107,12 @@ public class ApiController {
 
             return new ResponseEntity<>(jsonInBytes, HttpStatus.OK);
         } catch (RestClientResponseException e) {
-            // Create a JSON-friendly response body
-            Map<String, Object> body = new HashMap<>();
-            body.put("message", "Remote service call failed");
-            body.put("status", e.getRawStatusCode());
-            body.put("error", e.getStatusText());
-            body.put("details", e.getResponseBodyAsString());
-            return new ResponseEntity<>(body, HttpStatus.OK);
+            final ErrorResponse errorResponse = new ErrorResponse(
+                    e.getResponseBodyAsString(),
+                    e.getStatusText(),
+                    e.getRawStatusCode()
+            );
+            return new ResponseEntity<>(errorResponse, HttpStatus.OK);
         }
     }
 
