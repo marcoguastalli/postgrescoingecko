@@ -1,5 +1,6 @@
 package net.marco27.api.postgrescoingecko.controller;
 
+import net.marco27.api.postgrescoingecko.dto.ErrorResponse;
 import net.marco27.api.postgrescoingecko.exception.ConnectionException;
 import net.marco27.api.postgrescoingecko.exception.DocumentNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ApiExceptionHandlerControllerTest {
 
-    ApiExceptionHandlerController apiExceptionHandlerController;
+    private ApiExceptionHandlerController apiExceptionHandlerController;
 
     @BeforeEach
     void init() {
@@ -21,34 +22,48 @@ class ApiExceptionHandlerControllerTest {
     }
 
     @Test
-    void testIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            throw new IllegalArgumentException("no input parameter");
-        });
-        assertThat(exception.getMessage(), is("no input parameter"));
+    void testHandleIllegalArgumentException() {
+        IllegalArgumentException ex = new IllegalArgumentException("no input parameter");
+        ResponseEntity<ErrorResponse> response = apiExceptionHandlerController.handleIllegalArgument(ex);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(response.getBody().message(), is("no input parameter"));
+        assertThat(response.getBody().exception(), is("IllegalArgumentException"));
+        assertThat(response.getBody().status(), is(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
-    void testConnectionException() {
-        ConnectionException exception = assertThrows(ConnectionException.class, () -> {
-            throw new ConnectionException("connection exception", new Throwable());
-        });
-        assertThat(exception.getMessage(), is("connection exception"));
+    void testHandleConnectionException() {
+        ConnectionException ex = new ConnectionException("connection exception", new Throwable());
+        ResponseEntity<ErrorResponse> response = apiExceptionHandlerController.handleConnectionException(ex);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+        assertThat(response.getBody().message(), is("connection exception"));
+        assertThat(response.getBody().exception(), is("ConnectionException"));
+        assertThat(response.getBody().status(), is(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
     @Test
-    void testDocumentNotFoundException() {
-        DocumentNotFoundException exception = assertThrows(DocumentNotFoundException.class, () -> {
-            throw new DocumentNotFoundException("not found", new Throwable());
-        });
-        assertThat(exception.getMessage(), is("not found"));
+    void testHandleDocumentNotFoundException() {
+        DocumentNotFoundException ex = new DocumentNotFoundException("not found", new Throwable());
+        ResponseEntity<ErrorResponse> response = apiExceptionHandlerController.handleDocumentNotFound(ex);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(response.getBody().message(), is("not found"));
+        assertThat(response.getBody().exception(), is("DocumentNotFoundException"));
+        assertThat(response.getBody().status(), is(HttpStatus.NOT_FOUND.value()));
     }
 
     @Test
-    void testHandleError() {
-        final ResponseEntity<String> result = apiExceptionHandlerController.handleError(HttpStatus.NOT_FOUND,
-                new DocumentNotFoundException("This is just a 404 Test", new Throwable()));
-        assertThat(result.getBody(), is("This is just a 404 Test"));
+    void testHandleErrorDirectly() {
+        ResponseEntity<ErrorResponse> result = apiExceptionHandlerController.handleError(
+            HttpStatus.NOT_FOUND,
+            new DocumentNotFoundException("This is just a 404 Test", new Throwable())
+        );
+
         assertThat(result.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(result.getBody().message(), is("This is just a 404 Test"));
+        assertThat(result.getBody().exception(), is("DocumentNotFoundException"));
+        assertThat(result.getBody().status(), is(HttpStatus.NOT_FOUND.value()));
     }
 }
