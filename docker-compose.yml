@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
  postgrescoingecko:
-    image: postgrescoingecko:v0.0.1
+    image: postgrescoingecko:v0.0.2
     container_name: postgrescoingecko
     ports:
       - "8080:8081"
