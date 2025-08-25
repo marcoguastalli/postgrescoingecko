@@ -14,13 +14,15 @@ Build and deploy the app using Docker instructions
 - `cat /etc/os-release`
 
 ### access the container as root
-- `docker container ls docker exec -u root -it CONTAINER_ID /bin/sh`
+- `docker container ls`
+- `docker exec -u root -it CONTAINER_ID /bin/sh`
+- `java --version`
 
 ### logs from the container
-- `tail -n 1000 -f /logs/ postgrescoingecko.log`
+- `tail -n 1000 -f /logs/postgrescoingecko.log`
 
 ### logs
-- `docker exec -u root -it CONTAINER_ID tail -n 1000 -f /logs/ postgrescoingecko.log`
+- `docker exec -u root -it CONTAINER_ID tail -n 1000 -f /logs/postgrescoingecko.log`
 
 ### play
 - curl -I http://localhost:8080/postgres-coingecko-coins-list/v1/version
