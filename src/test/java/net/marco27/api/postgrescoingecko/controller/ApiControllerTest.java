@@ -58,7 +58,7 @@ class ApiControllerTest {
         when(apiService.getJson(anyString())).thenReturn(new byte[1]);
         when(apiTransactionService.save(any(ApiTransaction.class))).thenReturn(apiTransaction);
         // given
-        final ResponseEntity<byte[]> response = apiController.getLatterBlockchainBlocks(httpServletRequest);
+        final ResponseEntity<byte[]> response = (ResponseEntity<byte[]>) apiController.getLatterBlockchainBlocks(httpServletRequest);
         // then
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), is(new byte[1]));

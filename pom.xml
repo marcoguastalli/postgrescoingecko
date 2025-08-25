@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.0-M3</version>
+		<version>3.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<!-- project -->
@@ -21,7 +21,6 @@
 		<maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
 		<postgresql.version>42.7.5</postgresql.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.8.4</springdoc-openapi-starter-webmvc-ui.version>
-		<spring-boot-maven-plugin.version.temp>3.4.2</spring-boot-maven-plugin.version.temp>
 	</properties>
 	<!-- dependencies -->
 	<dependencies>
@@ -34,7 +33,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>${spring-boot-maven-plugin.version.temp}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -117,7 +115,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring-boot-maven-plugin.version.temp}</version>
 				<configuration>
 					<excludes>
 						<exclude>

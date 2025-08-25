@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.marco27.api.postgrescoingecko.config.ApplicationYmlConfig;
 import net.marco27.api.postgrescoingecko.domain.CoinResultComparator;
 import net.marco27.api.postgrescoingecko.domain.DeltaResult;
-import net.marco27.api.postgrescoingecko.exception.DocumentNotFoundException;
 import net.marco27.api.postgrescoingecko.model.ApiTransaction;
 import net.marco27.api.postgrescoingecko.model.Coin;
 import net.marco27.api.postgrescoingecko.service.ApiService;
@@ -21,8 +20,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientResponseException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static net.marco27.api.postgrescoingecko.AppConstants.SLASH;
@@ -61,46 +63,57 @@ public class ApiController {
     }
 
     @GetMapping("/coinslist")
-    public ResponseEntity<byte[]> getLatterBlockchainBlocks(@NonNull HttpServletRequest httpServletRequest) throws DocumentNotFoundException {
+    public ResponseEntity<?> getLatterBlockchainBlocks(@NonNull HttpServletRequest httpServletRequest) {
         // start
         final StopWatch stopWatch = new StopWatch("postgrescoingcecko.coinslist");
         stopWatch.start();
+        try {
 
-        // track transaction
-        final String trackingId = httpServletRequest.getSession().getId();
-        ApiTransaction apiTransaction = new ApiTransaction();
-        apiTransaction.setTransactionId(trackingId);
+            // track transaction
+            final String trackingId = httpServletRequest.getSession().getId();
+            ApiTransaction apiTransaction = new ApiTransaction();
+            apiTransaction.setTransactionId(trackingId);
 
-        // do
-        int numberOfCoins = 0;
-        final byte[] jsonInBytes = apiService.getJson(applicationYmlConfig.getUrlToCall());
-        final List<Coin> currentCoins = getListOfObjectsFromJSonBytes(jsonInBytes, trackingId, Coin.class);
-        if (null != currentCoins) {
-            numberOfCoins = currentCoins.size();
-            // save currentCoins
-            coinsService.saveAll(currentCoins);
-            // get previous coins in the DDBB
-            final List<Coin> coinsInDatabase = coinsService.findAll();
-            // compare
-            final DeltaResult<Coin> deltaResult = calculateDelta(coinsInDatabase, currentCoins, new CoinResultComparator());
-            final String deltaMessage = format("coins added are %s - coins removed are %s - coins modified are %s",
-                    deltaResult.getAdded().size(),
-                    deltaResult.getRemoved().size(),
-                    deltaResult.getModified().size());
-            apiTransaction.setDelta(deltaMessage);
-            logInfoTrackingId(log, trackingId, format("Found %s coins: %s", numberOfCoins, deltaMessage));
+            // do
+            int numberOfCoins = 0;
+            final byte[] jsonInBytes;
+            jsonInBytes = apiService.getJson(applicationYmlConfig.getUrlToCall());
+            final List<Coin> currentCoins = getListOfObjectsFromJSonBytes(jsonInBytes, trackingId, Coin.class);
+            if (null != currentCoins) {
+                numberOfCoins = currentCoins.size();
+                // save currentCoins
+                coinsService.saveAll(currentCoins);
+                // get previous coins in the DDBB
+                final List<Coin> coinsInDatabase = coinsService.findAll();
+                // compare
+                final DeltaResult<Coin> deltaResult = calculateDelta(coinsInDatabase, currentCoins, new CoinResultComparator());
+                final String deltaMessage = format("coins added are %s - coins removed are %s - coins modified are %s",
+                        deltaResult.getAdded().size(),
+                        deltaResult.getRemoved().size(),
+                        deltaResult.getModified().size());
+                apiTransaction.setDelta(deltaMessage);
+                logInfoTrackingId(log, trackingId, format("Found %s coins: %s", numberOfCoins, deltaMessage));
+            }
+            // fulfill apiTransaction object
+            apiTransaction.setResult(HttpStatus.OK.value());
+            apiTransaction.setNumberOfCoins(numberOfCoins);
+            final ApiTransaction apiTransactionPersisted = apiTransactionService.save(apiTransaction);
+            logDebugTrackingId(log, trackingId, format("Stored transaction at %s", apiTransactionPersisted.getCreated()));
+
+            // end
+            stopWatch.stop();
+            log.info(stopWatch.shortSummary());
+
+            return new ResponseEntity<>(jsonInBytes, HttpStatus.OK);
+        } catch (RestClientResponseException e) {
+            // Create a JSON-friendly response body
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Remote service call failed");
+            body.put("status", e.getRawStatusCode());
+            body.put("error", e.getStatusText());
+            body.put("details", e.getResponseBodyAsString());
+            return new ResponseEntity<>(body, HttpStatus.OK);
         }
-        // fulfill apiTransaction object
-        apiTransaction.setResult(HttpStatus.OK.value());
-        apiTransaction.setNumberOfCoins(numberOfCoins);
-        final ApiTransaction apiTransactionPersisted = apiTransactionService.save(apiTransaction);
-        logDebugTrackingId(log, trackingId, format("Stored transaction at %s", apiTransactionPersisted.getCreated()));
-
-        // end
-        stopWatch.stop();
-        log.info(stopWatch.shortSummary());
-
-        return new ResponseEntity<>(jsonInBytes, HttpStatus.OK);
     }
 
 }
